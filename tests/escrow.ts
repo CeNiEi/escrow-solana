@@ -4,6 +4,7 @@ import * as spl from "@solana/spl-token";
 import { Program } from "@project-serum/anchor";
 import { Escrow } from "../target/types/escrow";
 
+import { v4 } from 'uuid';
 import assert from "assert";
 
 interface State {
@@ -18,6 +19,8 @@ interface State {
 
   transactionState: anchor.web3.PublicKey;
   escrowWallet: anchor.web3.PublicKey;
+
+  identifier: string;
 }
 
 const createUser = async (
@@ -170,15 +173,19 @@ describe("escrow", () => {
   let state2: State;
 
   it("can setup all the prereqs", async () => {
-    let common = await setup(provider);
+    const common = await setup(provider);
+    const state1Identifier = v4().replace(/-/g, '');  
+    const state2Identifier = v4().replace(/-/g, '');  
 
     state1 = {
+      identifier: state1Identifier,
       ...common,
-      ...(await pdaSetup(program, "unique")),
+      ...(await pdaSetup(program, state1Identifier)),
     };
     state2 = {
+      identifier: state2Identifier,
       ...common,
-      ...(await pdaSetup(program, "unique2")),
+      ...(await pdaSetup(program, state2Identifier)),
     };
   });
 
@@ -190,7 +197,7 @@ describe("escrow", () => {
     assert.equal(preTxInitializerBalance, 100 * 10 ** 9);
 
     const txHash = await program.methods
-      .initialize(new anchor.BN(5 * 10 ** 9), "unique")
+      .initialize(new anchor.BN(5 * 10 ** 9), state1.identifier)
       .accounts({
         transactionState: state1.transactionState,
         escrowWallet: state1.escrowWallet,
@@ -229,7 +236,7 @@ describe("escrow", () => {
     assert.equal(preTxJoinerBalance, 100 * 10 ** 9);
 
     const txHash = await program.methods
-      .deposit("unique")
+      .deposit(state1.identifier)
       .accounts({
         transactionState: state1.transactionState,
         escrowWallet: state1.escrowWallet,
@@ -264,7 +271,7 @@ describe("escrow", () => {
     assert.equal(preTxInitializerBalance, 95 * 10 ** 9);
 
     const txHash = await program.methods
-      .initialize(new anchor.BN(5 * 10 ** 9), "unique2")
+      .initialize(new anchor.BN(5 * 10 ** 9), state2.identifier)
       .accounts({
         transactionState: state2.transactionState,
         escrowWallet: state2.escrowWallet,
@@ -308,7 +315,7 @@ describe("escrow", () => {
     }
 
     const txHash = await program.methods
-      .outcome("unique", winner.publicKey)
+      .outcome(state1.identifier, winner.publicKey)
       .accounts({
         transactionState: state1.transactionState,
         escrowWallet: state1.escrowWallet,
@@ -348,7 +355,7 @@ describe("escrow", () => {
 
   it("can deposit funds by joiner in the 2nd game", async () => {
     const txHash = await program.methods
-      .deposit("unique2")
+      .deposit(state2.identifier)
       .accounts({
         transactionState: state2.transactionState,
         escrowWallet: state2.escrowWallet,
@@ -382,7 +389,7 @@ describe("escrow", () => {
     }
 
     const txHash = await program.methods
-      .outcome("unique2", winner.publicKey)
+      .outcome(state2.identifier, winner.publicKey)
       .accounts({
         transactionState: state2.transactionState,
         escrowWallet: state2.escrowWallet,
