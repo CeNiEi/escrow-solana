@@ -1,4 +1,5 @@
-{
+ {
+
   "compilerOptions": {
     "types": ["mocha", "chai"],
     "typeRoots": ["./node_modules/@types"],
@@ -8,3 +9,5 @@
     "esModuleInterop": true
   }
 }
+
+
