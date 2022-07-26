@@ -57,6 +57,29 @@ import { getFirestore } from "@firebase/firestore";
       console.log(err);
     });
   });
+
+  /*await appLogin.v2.updateStreamRules({
+    add: [
+      {
+        value: "@CeNiEi_test (INITIALIZE OR BET)",
+      },
+      {
+        value: "@CeNiEi_test ACCEPT is:reply",
+      },
+    ],
+  });
+
+  await appLogin.v2.updateStreamRules({
+    delete: {
+      ids: [
+        "1546750756652326912",
+        "1546750756652326913",
+        "1546750756652326914",
+      ],
+    },
+  });
+
+  console.log(await appLogin.v2.streamRules());
   //await appLogin.v2.updateStreamRules({
   //  add: [
   //    {
@@ -65,4 +88,5 @@ import { getFirestore } from "@firebase/firestore";
   //  ],
   //});
   //console.log(await appLogin.v2.streamRules());
+  */
 })();
