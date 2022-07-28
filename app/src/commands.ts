@@ -62,7 +62,6 @@ const createBet = async (
   amount: number,
   client: TwitterApi
 ) => {
-  /*
   const [txHash, gameIdentifier] = await wallet
     .initializeBet(userid, amount)
     .catch((err) => {
@@ -70,10 +69,14 @@ const createBet = async (
     });
   // send the link to explorer
   const link = `https://explorer.solana.com/tx/${txHash}?cluster=devnet`;
-  await client.v2.reply(`${link} ${gameIdentifier}`, tweetId);
-  */
+  await client.v2.reply(
+    `New Bet Created with ID: ${gameIdentifier}: ${link}`,
+    tweetId
+  );
+  /*
   const gameIdentifier = "00000000000000000000000000000000";
   client.v2.reply(`New Bet Created with id: ${gameIdentifier}`, tweetId);
+  */
 };
 
 const acceptBet = async (
@@ -85,7 +88,6 @@ const acceptBet = async (
   twitterClient: TwitterApi,
   db: Firestore
 ) => {
-  /*
   const txHash1 = await wallet.joinBet(userId, gameIdentifier).catch((err) => {
     throw err;
   });
@@ -101,10 +103,12 @@ const acceptBet = async (
   // send both the links on explorer
   const link1 = `https://explorer.solana.com/tx/${txHash1}?cluster=devnet`;
   const link2 = `https://explorer.solana.com/tx/${txHash2}?cluster=devnet`;
-  await twitterClient.v2.reply(`${link1} ${link2}`, tweetId);
-  */
+  await twitterClient.v2.reply(
+    `Bet ID: ${gameIdentifier} ${link1} ${link2}`,
+    tweetId
+  );
 
-  twitterClient.v2.reply(`Bet id: ${gameIdentifier} Accepted`, tweetId);
+  //twitterClient.v2.reply(`Bet id: ${gameIdentifier} Accepted`, tweetId);
 };
 
 const createNewAccount = async (
@@ -114,15 +118,17 @@ const createNewAccount = async (
   twitterClient: TwitterApi,
   db: Firestore
 ) => {
-  /*
   const { publicKey, mnemonic } = await wallet
     .createAccount(userId, db)
     .catch((err) => {
       throw err;
     });
 
-  await twitterClient.v1.sendDm({ recipient_id: userId, text: mnemonic });
-  */
+  twitterClient.v2.reply(`New User: ${publicKey}`, tweetId);
+  //await twitterClient.v1.sendDm({ recipient_id: userId, text: mnemonic });
+
+  /*
   const publicKey = "00000000000000000000000000000000";
   twitterClient.v2.reply(`New User: ${publicKey}`, tweetId);
+  */
 };
